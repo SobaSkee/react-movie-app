@@ -9,40 +9,18 @@ const API_URL = "https://www.omdbapi.com?apikey=88759a57";
 const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [movies, setMovies] = useState([]);
-  // add a state for pages to receive more movies per request
-  const [page, setPage] = useState(1);
-  const [totalResults, setTotalResults] = useState(0);
-
 
   useEffect(() => {
-    searchMovies("Family Guy", 1);
+    searchMovies("Batman");
   }, []);
 
-  const searchMovies = async (title, page) => {
+  const searchMovies = async (title) => {
     const response = await fetch(`${API_URL}&s=${title}`);
     const data = await response.json();
 
-    if (page === 1) {
-      setMovies(data.Search);
-    }
-    else {
-      setMovies((prevMovies) => [...prevMovies, ...data.Search]);
-    }
-
-    setTotalResults(data.totalResults);
-    console.log(data.Search);
+    setMovies(data.Search);
   };
 
-  const handleSearch = () => {
-    setPage(1);
-    searchMovies(searchTerm, 1);
-  };
-
-  const loadMoreMoves = () => {
-    const nextPage = page + 1;
-    setPage(nextPage);
-    searchMovies(searchterm, nextPage);
-  }
   return (
     <div className="app">
       <h1>SobaCinema</h1>
@@ -63,18 +41,12 @@ const App = () => {
       {movies?.length > 0 ? (
         <div className="container">
           {movies.map((movie) => (
-            <MovieCard key={index} movie={movie} />
+            <MovieCard movie={movie} />
           ))}
         </div>
       ) : (
         <div className="empty">
           <h2>No movies found</h2>
-        </div>
-      )}
-
-      {movies.length > 0 && movies.length < totalResults && (
-        <div className="load-more">
-          <button onClick={loadMoreMovies}>Load More</button>
         </div>
       )}
     </div>
